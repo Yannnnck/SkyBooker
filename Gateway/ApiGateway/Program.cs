@@ -1,19 +1,24 @@
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
+using MMLib.SwaggerForOcelot.DependencyInjection;
+using MMLib.SwaggerForOcelot.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Ocelot Config laden
+// Ocelot und SwaggerForOcelot konfigurieren
 builder.Configuration.AddJsonFile("ocelot.json", optional: false, reloadOnChange: true);
 
-// Ocelot hinzufügen
 builder.Services.AddOcelot(builder.Configuration);
+builder.Services.AddSwaggerForOcelot(builder.Configuration);
 
 var app = builder.Build();
 
-// Middleware-Reihenfolge beachten
-app.UseRouting();
-app.UseEndpoints(endpoints => { });
+// Swagger-UI für Ocelot konfigurieren (richtige aktuelle Methode!)
+app.UseSwaggerForOcelotUI(opt =>
+{
+    opt.PathToSwaggerGenerator = "/swagger/docs"; // <- wichtig
+});
+
 await app.UseOcelot();
 
 app.Run();
