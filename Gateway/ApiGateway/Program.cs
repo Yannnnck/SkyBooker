@@ -22,5 +22,18 @@ app.UseSwaggerForOcelotUI(opt =>
     opt.PathToSwaggerGenerator = "/swagger/docs";
 });
 
+
+// "/" auf "/swagger" umleiten
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/")
+    {
+        context.Response.Redirect("/swagger");
+        return;
+    }
+    await next();
+});
+
+// Ocelot Middleware
 await app.UseOcelot();
 app.Run();
