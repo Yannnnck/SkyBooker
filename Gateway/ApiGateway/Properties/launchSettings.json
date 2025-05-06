@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "http": {
+    "ApiGateway": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,

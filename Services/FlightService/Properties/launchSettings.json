@@ -9,7 +9,7 @@
     }
   },
   "profiles": {
-    "http": {
+    "FlightService": {
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": false,

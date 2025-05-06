@@ -37,37 +37,12 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SkyBooker.FlightService", Version = "v1" });
-    c.AddServer(new OpenApiServer { Url = "http://localhost:5002" });
+    c.OperationFilter<AuthorizeCheckOperationFilter>();
 
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
-    {
-        Description = "JWT Authorization header using the Bearer scheme",
-        Name = "Authorization",
-        In = ParameterLocation.Header,
-        Type = SecuritySchemeType.ApiKey,
-        Scheme = "Bearer"
-    });
-
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
-    {
-        {
-            new OpenApiSecurityScheme
-            {
-                Reference = new OpenApiReference
-                {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
-                }
-            },
-            new string[] {}
-        }
-    });
-
-    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
     c.IncludeXmlComments(xmlPath);
 });
-
 
 var app = builder.Build();
 
@@ -81,8 +56,15 @@ using (var scope = app.Services.CreateScope())
 // Middleware
 app.UseAuthentication();
 app.UseAuthorization();
-app.UseSwagger();
-app.UseSwaggerUI();
-app.MapControllers();
 
+app.UseSwagger(c =>
+{
+    c.RouteTemplate = "swagger/docs/v1/FlightService/swagger.json";
+});
+app.UseSwaggerUI(c =>
+{
+    c.SwaggerEndpoint("/swagger/docs/v1/FlightService/swagger.json", "FlightService v1");
+});
+
+app.MapControllers();
 app.Run();
