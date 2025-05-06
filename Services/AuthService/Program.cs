@@ -4,28 +4,32 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
 using Shared.Exceptions;
+using System.Reflection;
 using System.Text;
 using AuthService.Data;
 using AuthService.Configuration;
 using AuthService.Interfaces;
+using AuthService.Filters; 
+
+
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Serilog hinzufügen
+// Serilog
 builder.Host.UseSerilog((context, config) =>
 {
     config.WriteTo.Console();
     config.ReadFrom.Configuration(context.Configuration);
 });
 
-// DB Connection (SQLite)
+// DB Connection
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// JWT Settings aus appsettings laden
+// JWT Settings laden
 builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
 
-// Authentication einrichten
+// Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -42,7 +46,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Services hinzufügen
+// Services
 builder.Services.AddScoped<IAuthService, AuthService.Services.AuthService>();
 
 // Controller und Swagger
@@ -55,7 +59,7 @@ builder.Services.AddSwaggerGen(c =>
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization Header - Bearer {token}",
+        Description = "JWT Authorization header using the Bearer scheme",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
@@ -76,11 +80,16 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
+
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
+
 
 var app = builder.Build();
 
-// Middlewares
+// Middleware
 app.UseSerilogRequestLogging();
 app.UseAuthentication();
 app.UseAuthorization();

@@ -4,14 +4,14 @@ using FlightService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Reflection;
+using FlightService.Filters;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// MongoDB Context
+// MongoDB Context + Service
 builder.Services.AddSingleton<MongoDbContext>();
-
-// FlightService
 builder.Services.AddScoped<IFlightService, FlightService.Services.FlightService>();
 
 // JWT Authentication
@@ -62,7 +62,12 @@ builder.Services.AddSwaggerGen(c =>
             new string[] {}
         }
     });
+
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = System.IO.Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
+
 
 var app = builder.Build();
 
