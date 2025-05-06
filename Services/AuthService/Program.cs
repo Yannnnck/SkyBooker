@@ -8,6 +8,7 @@ using AuthService.Data;
 using AuthService.Configuration;
 using AuthService.Interfaces;
 using AuthService.Filters;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -51,6 +52,8 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SkyBooker.AuthService", Version = "v1" });
+    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
