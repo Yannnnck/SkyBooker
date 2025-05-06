@@ -3,12 +3,11 @@ using BookingService.Interfaces;
 using BookingService.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
 using BookingService.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// DB + Controller
+// Controller und DB
 builder.Services.AddControllers();
 builder.Services.AddDbContext<BookingDbContext>(options =>
     options.UseSqlite(builder.Configuration.GetConnectionString("BookingDatabase")));
@@ -18,27 +17,42 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SkyBooker.BookingService", Version = "v1" });
-    c.OperationFilter<AuthorizeCheckOperationFilter>();
 
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath);
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
 var app = builder.Build();
 
 // Middleware
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.UseSwagger(c =>
-{
-    c.RouteTemplate = "swagger/docs/v1/BookingService/swagger.json";
-});
+app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/docs/v1/BookingService/swagger.json", "BookingService v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "SkyBooker.BookingService v1");
+    c.RoutePrefix = string.Empty;
 });
-
+app.UseHttpsRedirection();
+app.UseAuthorization();
 app.MapControllers();
 app.Run();

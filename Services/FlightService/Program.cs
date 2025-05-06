@@ -4,9 +4,8 @@ using FlightService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using System.Reflection;
-using FlightService.Filters;
 using System.Text;
+using FlightService.Filters;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -31,17 +30,36 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Controller und Swagger
+// Controllers und Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SkyBooker.FlightService", Version = "v1" });
-    c.OperationFilter<AuthorizeCheckOperationFilter>();
 
-    var xmlFile = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
-    c.IncludeXmlComments(xmlPath);
+    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+    {
+        Description = "JWT Authorization header using the Bearer scheme",
+        Name = "Authorization",
+        In = ParameterLocation.Header,
+        Type = SecuritySchemeType.ApiKey,
+        Scheme = "Bearer"
+    });
+
+    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    {
+        {
+            new OpenApiSecurityScheme
+            {
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
+            },
+            new string[] {}
+        }
+    });
 });
 
 var app = builder.Build();
@@ -54,17 +72,13 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Middleware
-app.UseAuthentication();
-app.UseAuthorization();
-
-app.UseSwagger(c =>
-{
-    c.RouteTemplate = "swagger/docs/v1/FlightService/swagger.json";
-});
+app.UseSwagger();
 app.UseSwaggerUI(c =>
 {
-    c.SwaggerEndpoint("/swagger/docs/v1/FlightService/swagger.json", "FlightService v1");
+    c.SwaggerEndpoint("/swagger/v1/swagger.json", "SkyBooker.FlightService v1");
+    c.RoutePrefix = string.Empty;
 });
-
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 app.Run();
