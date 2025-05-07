@@ -53,5 +53,32 @@ namespace FlightService.Controllers
                 return Ok(ApiResponse<FlightResponseDto>.SuccessResponse(flight, "Flug erfolgreich abgerufen"));
 
         }
+
+        [HttpPut("{id}")]
+        [SwaggerOperation(Summary = "Flug aktualisieren")]
+        [ProducesResponseType(typeof(ApiResponse<string>), 200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> UpdateFlight(string id, [FromBody] UpdateFlightDto request)
+        {
+            var success = await _flightService.UpdateFlightAsync(id, request);
+            if (!success)
+                return NotFound(ApiResponse<string>.FailureResponse("Flug nicht gefunden"));
+
+            return Ok(ApiResponse<string>.SuccessResponse(id, "Flug erfolgreich aktualisiert"));
+        }
+
+        [HttpDelete("{id}")]
+        [SwaggerOperation(Summary = "Flug löschen")]
+        [ProducesResponseType(typeof(ApiResponse<string>), 200)]
+        [ProducesResponseType(404)]
+        public async Task<IActionResult> DeleteFlight(string id)
+        {
+            var success = await _flightService.DeleteFlightAsync(id);
+            if (!success)
+                return NotFound(ApiResponse<string>.FailureResponse("Flug nicht gefunden"));
+
+            return Ok(ApiResponse<string>.SuccessResponse(id, "Flug erfolgreich gelöscht"));
+        }
+
     }
 }

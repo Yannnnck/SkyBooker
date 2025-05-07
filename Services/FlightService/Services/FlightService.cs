@@ -35,5 +35,28 @@ namespace FlightService.Services
             var flight = await _flightCollection.Find(x => x.Id == id).FirstOrDefaultAsync();
             return flight == null ? null : _mapper.Map<FlightResponseDto>(flight);
         }
+
+        public async Task<bool> UpdateFlightAsync(string id, UpdateFlightDto dto)
+        {
+            var filter = Builders<Flight>.Filter.Eq(f => f.Id, id);
+            var update = Builders<Flight>.Update
+                .Set(f => f.AirlineName, dto.AirlineName)
+                .Set(f => f.Source, dto.Source)
+                .Set(f => f.Destination, dto.Destination)
+                .Set(f => f.DepartureTime, dto.DepartureTime)
+                .Set(f => f.ArrivalTime, dto.ArrivalTime)
+                .Set(f => f.AvailableSeats, dto.AvailableSeats)
+                .Set(f => f.UpdatedAt, DateTime.UtcNow);
+
+            var result = await _flightCollection.UpdateOneAsync(filter, update);
+            return result.MatchedCount > 0;
+        }
+
+        public async Task<bool> DeleteFlightAsync(string id)
+        {
+            var result = await _flightCollection.DeleteOneAsync(f => f.Id == id);
+            return result.DeletedCount > 0;
+        }
+
     }
 }
