@@ -1,6 +1,6 @@
 ﻿namespace FlightService.DTOs
 {
-    public class CreateFlightRequest
+    public class CreateFlightDto
     {
         public string FlightId { get; set; } = string.Empty;
         public string AirlineName { get; set; } = string.Empty;

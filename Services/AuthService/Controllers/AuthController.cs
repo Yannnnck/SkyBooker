@@ -1,6 +1,8 @@
 ﻿using AuthService.DTOs;
 using AuthService.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Swashbuckle.AspNetCore.Annotations;
+
 
 namespace AuthService.Controllers
 {
@@ -16,16 +18,28 @@ namespace AuthService.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register(RegisterRequest request)
+        [SwaggerOperation(Summary = "Register a new user.")]
+        [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Register([FromBody] RegisterRequest request)
         {
             var response = await _authService.RegisterAsync(request);
+            if (!response.Success)
+                return BadRequest(response);
+
             return Ok(response);
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginRequest request)
+        [SwaggerOperation(Summary = "Login and retrieve JWT token.")]
+        [ProducesResponseType(typeof(AuthResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Login([FromBody] LoginRequest request)
         {
             var response = await _authService.LoginAsync(request);
+            if (!response.Success)
+                return BadRequest(response);
+
             return Ok(response);
         }
     }

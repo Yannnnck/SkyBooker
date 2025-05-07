@@ -3,6 +3,6 @@
     public class AuthResponse
     {
         public string Token { get; set; } = string.Empty;
-        public DateTime Expiration { get; set; }
+        public DateTime ExpiresAt { get; set; }
     }
 }

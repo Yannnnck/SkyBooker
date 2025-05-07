@@ -4,8 +4,8 @@ namespace FlightService.Interfaces
 {
     public interface IFlightService
     {
-        Task<string> CreateFlightAsync(CreateFlightRequest request);
-        Task<List<FlightResponse>> GetAllFlightsAsync();
-        Task<FlightResponse?> GetFlightByIdAsync(string id);
+        Task<string> CreateFlightAsync(CreateFlightDto dto);
+        Task<List<FlightResponseDto>> GetAllFlightsAsync();
+        Task<FlightResponseDto?> GetFlightByIdAsync(string id);
     }
 }

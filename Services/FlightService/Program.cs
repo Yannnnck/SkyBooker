@@ -1,20 +1,26 @@
 using FlightService.Data;
 using FlightService.Interfaces;
+using FlightService.Mappings;
 using FlightService.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using MongoDB.Driver;
 using System.Text;
-using FlightService.Filters;
-using System.Reflection;
+using AutoMapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// MongoDB Context + Service
+// MongoDB
 builder.Services.AddSingleton<MongoDbContext>();
-builder.Services.AddScoped<IFlightService, FlightService.Services.FlightService>();
+builder.Services.AddSingleton<IMongoDatabase>(sp =>
+    sp.GetRequiredService<MongoDbContext>().Database);
 
-// JWT Authentication
+// Services
+builder.Services.AddScoped<IFlightService, FlightService.Services.FlightService>();
+builder.Services.AddAutoMapper(typeof(FlightMappingProfile));
+
+// Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -31,18 +37,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         };
     });
 
-// Controllers und Swagger
+// Controllers & Swagger
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "SkyBooker.FlightService", Version = "v1" });
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    c.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
 
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme",
+        Description = "JWT Authorization header using Bearer scheme",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
@@ -56,32 +60,25 @@ builder.Services.AddSwaggerGen(c =>
             {
                 Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
                 }
             },
-            new string[] {}
+            new string[]{}
         }
     });
+
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 
 var app = builder.Build();
 
-// MongoDB Initializer
-using (var scope = app.Services.CreateScope())
-{
-    var mongoContext = scope.ServiceProvider.GetRequiredService<MongoDbContext>();
-    MongoDbInitializer.Initialize(mongoContext);
-}
-
 // Middleware
-app.UseSwagger();
-app.UseSwaggerUI(c =>
-{
-    c.SwaggerEndpoint("/swagger/v1/swagger.json", "SkyBooker.FlightService v1");
-    c.RoutePrefix = string.Empty;
-});
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseSwagger();
+app.UseSwaggerUI();
 app.MapControllers();
 app.Run();
