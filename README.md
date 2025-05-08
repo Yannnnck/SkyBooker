@@ -11,7 +11,6 @@ Das Projekt nutzt ASP.NET Core, Docker, Serilog, Swagger, JWT und moderne Datenb
 ```
 SkyBooker/
 ├── docker-compose.yml
-├── docker-compose.override.yml
 ├── README.md
 ├── API Gateway (kommt später mit Ocelot)
 │
