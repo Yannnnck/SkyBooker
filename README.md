@@ -81,7 +81,7 @@ SkyBooker/
 
 ## 🛠️ Technologien
 ```
-| Bereich				 | Technologie											|
+| Bereich				 | Technologie                                          |
 |------------------------|------------------------------------------------------|
 | Framework              | ASP.NET Core 8.0                                     |
 | Microservices          | Ja (3 Services aktuell)                              |
