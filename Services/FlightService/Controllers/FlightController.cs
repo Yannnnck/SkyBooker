@@ -3,7 +3,6 @@ using FlightService.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
-using Shared.Responses;
 using FlightService.Services;
 
 
