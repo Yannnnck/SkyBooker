@@ -1,34 +1,43 @@
 ﻿{
-  "SwaggerEndPoints": [
+  "Routes": [
     {
-      "Key": "AuthService",
-      "Config": [
+      "DownstreamPathTemplate": "/api/auth/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
         {
-          "Name": "Auth Service - v1",
-          "Version": "v1",
-          "Url": "http://localhost:5001/swagger/v1/swagger.json"
+          "Host": "authservice",
+          "Port": 5001
         }
-      ]
+      ],
+      "UpstreamPathTemplate": "/auth/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
-      "Key": "FlightService",
-      "Config": [
+      "DownstreamPathTemplate": "/api/flight/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
         {
-          "Name": "Flight Service - v1",
-          "Version": "v1",
-          "Url": "http://localhost:5002/swagger/v1/swagger.json"
+          "Host": "flightservice",
+          "Port": 5002
         }
-      ]
+      ],
+      "UpstreamPathTemplate": "/flight/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     },
     {
-      "Key": "BookingService",
-      "Config": [
+      "DownstreamPathTemplate": "/api/booking/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
         {
-          "Name": "Booking Service - v1",
-          "Version": "v1",
-          "Url": "http://localhost:5003/swagger/v1/swagger.json"
+          "Host": "bookingservice",
+          "Port": 5003
         }
-      ]
+      ],
+      "UpstreamPathTemplate": "/booking/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE" ]
     }
-  ]
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5000"
+  }
 }

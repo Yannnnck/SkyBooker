@@ -19,15 +19,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Postman", "Postman", "{58FC
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{94BA2857-8B85-4B2D-9BFD-6EC84AF18258}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{B1173CC9-5CE6-4B2F-B343-EE777AE10ED4}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AuthService", "Services\AuthService\AuthService.csproj", "{16FD9863-A745-7DF3-D0FD-B69A0BD39998}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BookingService", "Services\BookingService\BookingService.csproj", "{337E4A6A-26B0-70A5-FD62-6182A43AF070}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FlightService", "Services\FlightService\FlightService.csproj", "{2C65DD93-88A4-3858-2A66-102103FF0ACF}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{054B473F-7C91-4D90-B54A-0C05EDC3BA16}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dateien", "Dateien", "{84D27F74-D2BA-6C25-2661-968F101900D9}"
 	ProjectSection(SolutionItems) = preProject
@@ -36,6 +32,10 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Dateien", "Dateien", "{84D2
 		docker-compose.yml = docker-compose.yml
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{054B473F-7C91-4D90-B54A-0C05EDC3BA16}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shared", "Shared", "{1C4C4480-31A0-4512-A73D-C832D14412A7}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -72,7 +72,7 @@ Global
 		{16FD9863-A745-7DF3-D0FD-B69A0BD39998} = {94BA2857-8B85-4B2D-9BFD-6EC84AF18258}
 		{337E4A6A-26B0-70A5-FD62-6182A43AF070} = {94BA2857-8B85-4B2D-9BFD-6EC84AF18258}
 		{2C65DD93-88A4-3858-2A66-102103FF0ACF} = {94BA2857-8B85-4B2D-9BFD-6EC84AF18258}
-		{054B473F-7C91-4D90-B54A-0C05EDC3BA16} = {B1173CC9-5CE6-4B2F-B343-EE777AE10ED4}
+		{054B473F-7C91-4D90-B54A-0C05EDC3BA16} = {1C4C4480-31A0-4512-A73D-C832D14412A7}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9A595522-3DF3-44EB-9A4B-2AF56FFF6A0A}
