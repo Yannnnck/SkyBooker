@@ -1,31 +1,39 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using AuthService.Models;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using AuthService.Configuration;
-using AuthService.Models;
 
 namespace AuthService.Helpers
 {
-    public static class JwtTokenGenerator
+    public class JwtTokenGenerator
     {
-        public static string GenerateToken(User user, JwtSettings jwtSettings)
+        private readonly IConfiguration _configuration;
+
+        public JwtTokenGenerator(IConfiguration configuration)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey));
+            _configuration = configuration;
+        }
+
+        public string GenerateToken(User user)
+        {
+            var jwtSettings = _configuration.GetSection("JwtSettings");
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"] ?? string.Empty));
+
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = new[]
+            var claims = new List<Claim>
             {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
+                new Claim(ClaimTypes.Name, user.Username),
+                new Claim(ClaimTypes.Email, user.Email)
             };
 
             var token = new JwtSecurityToken(
-                issuer: jwtSettings.Issuer,
-                audience: jwtSettings.Audience,
+                issuer: jwtSettings["Issuer"],
+                audience: jwtSettings["Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(jwtSettings.ExpirationMinutes),
+                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(jwtSettings["ExpirationMinutes"])),
                 signingCredentials: credentials
             );
 

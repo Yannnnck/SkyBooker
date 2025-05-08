@@ -1,4 +1,4 @@
-﻿namespace BookingService.Entities
+﻿namespace BookingService.Models
 {
     public class Booking
     {

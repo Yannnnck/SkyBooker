@@ -1,6 +1,6 @@
 ﻿namespace BookingService.DTOs
 {
-    public class CreateBookingRequestDto
+    public class CreateBookingRequest
     {
         public string FlightId { get; set; } = string.Empty;
         public string PassengerId { get; set; } = string.Empty;

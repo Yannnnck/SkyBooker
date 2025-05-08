@@ -5,8 +5,11 @@ namespace AuthService.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
+        public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
+            : base(options)
+        {
+        }
 
-        public DbSet<User> Users => Set<User>();
+        public DbSet<User> Users { get; set; }
     }
 }

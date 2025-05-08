@@ -1,5 +1,4 @@
-﻿using BookingService.Entities;
-using BookingService.Models;
+﻿using BookingService.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace BookingService.Data

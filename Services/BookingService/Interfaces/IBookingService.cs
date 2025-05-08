@@ -6,7 +6,7 @@ namespace BookingService.Interfaces
     {
         Task<int> CreateBookingAsync(CreateBookingRequest request);
         Task<List<BookingResponse>> GetAllBookingsAsync();
-        Task<BookingResponse> GetBookingByIdAsync(int id);
+        Task<BookingResponse?> GetBookingByIdAsync(int id);
         Task<bool> UpdateBookingAsync(int id, CreateBookingRequest request);
         Task<bool> DeleteBookingAsync(int id);
     }

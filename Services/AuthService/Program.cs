@@ -1,30 +1,55 @@
 ﻿using AuthService.Data;
+using AuthService.Helpers;
 using AuthService.Interfaces;
 using AuthService.Services;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
+using AuthService.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container
+// Datenbank
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Services
+builder.Services.AddScoped<IAuthService, AuthService.Services.AuthService>();
+builder.Services.AddScoped<JwtTokenGenerator>();
+
+// JWT Authentication
+builder.Services.Configure<JwtSettings>(builder.Configuration.GetSection("JwtSettings"));
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(options =>
+    {
+        var jwtSettings = builder.Configuration.GetSection("JwtSettings").Get<JwtSettings>();
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
+        };
+    });
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-
-// Swagger mit Bearer Token Support
 builder.Services.AddSwaggerGen(c =>
 {
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "AuthService", Version = "v1" });
-
-    // Bearer Auth hinzufügen
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
-        Description = "JWT Authorization header using the Bearer scheme. Example: 'Bearer 12345abcdef'",
+        Description = "JWT Authorization header using Bearer scheme",
         Name = "Authorization",
         In = ParameterLocation.Header,
         Type = SecuritySchemeType.ApiKey,
         Scheme = "Bearer"
     });
-
     c.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
@@ -32,40 +57,25 @@ builder.Services.AddSwaggerGen(c =>
             {
                 Reference = new OpenApiReference
                 {
-                    Type = ReferenceType.SecurityScheme,
-                    Id = "Bearer"
+                    Type=ReferenceType.SecurityScheme,
+                    Id="Bearer"
                 }
             },
-            new List<string>()
+            new string[]{}
         }
     });
 });
 
-// DbContext für SQLite
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-// AuthService einbinden
-builder.Services.AddScoped<IAuthService, AuthService.Services.AuthService>();
-
 var app = builder.Build();
 
-// 💥 Sicherstellen, dass DB existiert und Tabellen angelegt sind
-using (var scope = app.Services.CreateScope())
-{
-    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-    dbContext.Database.EnsureCreated(); // WICHTIG: Erzeugt die Users-Tabelle, falls nicht vorhanden
-}
-
-// Configure the HTTP request pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.Run();

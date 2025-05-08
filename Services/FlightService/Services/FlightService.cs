@@ -57,6 +57,20 @@ namespace FlightService.Services
             var result = await _flightCollection.DeleteOneAsync(f => f.Id == id);
             return result.DeletedCount > 0;
         }
+        public async Task<bool> ReduceSeatsAsync(string flightId, int ticketCount)
+        {
+            var flight = await _flightCollection.Find(f => f.FlightId == flightId).FirstOrDefaultAsync();
+            if (flight == null || flight.AvailableSeats < ticketCount)
+                return false;
+
+            var update = Builders<Flight>.Update
+                .Inc(f => f.AvailableSeats, -ticketCount)
+                .Set(f => f.UpdatedAt, DateTime.UtcNow);
+
+            var result = await _flightCollection.UpdateOneAsync(f => f.FlightId == flightId, update);
+
+            return result.ModifiedCount > 0;
+        }
 
     }
 }

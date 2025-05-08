@@ -1,107 +1,72 @@
-﻿using AuthService.Common;
-using AuthService.Data;
+﻿using AuthService.Data;
 using AuthService.DTOs;
 using AuthService.Interfaces;
 using AuthService.Models;
-using BCrypt.Net;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.IdentityModel.Tokens;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using System.Text;
 
 namespace AuthService.Services
 {
     public class AuthService : IAuthService
     {
         private readonly ApplicationDbContext _context;
-        private readonly IConfiguration _configuration;
 
-        public AuthService(ApplicationDbContext context, IConfiguration configuration)
+        public AuthService(ApplicationDbContext context)
         {
             _context = context;
-            _configuration = configuration;
         }
 
-        public async Task<ApiResponse<string>> RegisterAsync(RegisterRequest request)
+        public async Task<User?> LoginAsync(LoginRequest request)
         {
-            if (await _context.Users.AnyAsync(u => u.Username == request.Username))
-            {
-                return new ApiResponse<string>
-                {
-                    Success = false,
-                    Message = "Username already exists."
-                };
-            }
+            return await _context.Users
+                .FirstOrDefaultAsync(u => u.Username == request.Username && u.PasswordHash == request.Password);
+        }
 
-            var hashedPassword = BCrypt.Net.BCrypt.HashPassword(request.Password);
-
+        public async Task<bool> RegisterAsync(RegisterRequest request)
+        {
             var user = new User
             {
                 Username = request.Username,
                 Email = request.Email,
-                PasswordHash = hashedPassword
+                PasswordHash = request.Password
             };
 
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
-
-            return new ApiResponse<string>
-            {
-                Success = true,
-                Message = "User registered successfully."
-            };
+            return true;
         }
 
-        public async Task<ApiResponse<AuthResponse>> LoginAsync(LoginRequest request)
+        public async Task<bool> UpdateUserAsync(int id, UpdateUserRequest request)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+                return false;
 
-            if (user == null || !BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash))
-            {
-                return new ApiResponse<AuthResponse>
-                {
-                    Success = false,
-                    Message = "Invalid credentials."
-                };
-            }
+            user.Username = request.Username;
+            user.Email = request.Email;
 
-            var token = GenerateJwtToken(user);
-
-            return new ApiResponse<AuthResponse>
-            {
-                Success = true,
-                Data = new AuthResponse
-                {
-                    Token = token,
-                    ExpiresAt = DateTime.UtcNow.AddHours(1)
-                }
-            };
+            await _context.SaveChangesAsync();
+            return true;
         }
 
-        private string GenerateJwtToken(User user)
+        public async Task<User?> GetUserByIdAsync(int id)
         {
-            var jwtSettings = _configuration.GetSection("JwtSettings");
+            return await _context.Users.FindAsync(id);
+        }
 
-            var claims = new[]
-            {
-                new Claim(JwtRegisteredClaimNames.Sub, user.Username),
-                new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim(ClaimTypes.NameIdentifier, user.Id.ToString())
-            };
+        public async Task<IEnumerable<User>> GetAllUsersAsync()
+        {
+            return await _context.Users.ToListAsync();
+        }
 
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtSettings["SecretKey"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+        public async Task<bool> DeleteUserAsync(int id)
+        {
+            var user = await _context.Users.FindAsync(id);
+            if (user == null)
+                return false;
 
-            var token = new JwtSecurityToken(
-                issuer: jwtSettings["Issuer"],
-                audience: jwtSettings["Audience"],
-                claims: claims,
-                expires: DateTime.UtcNow.AddHours(1),
-                signingCredentials: creds
-            );
-
-            return new JwtSecurityTokenHandler().WriteToken(token);
+            _context.Users.Remove(user);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
