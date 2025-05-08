@@ -83,15 +83,15 @@ SkyBooker/
 ```
 | Bereich				 | Technologie											|
 |------------------------|------------------------------------------------------|
-| Framework              | ASP.NET Core 8.0										|
-| Microservices          | Ja (3 Services aktuell)								|
-| Gateway                | Ocelot (geplant)										|
-| Authentifizierung      | JWT													|
-| Datenbanken            | SQLite (User) / MSSQL (Booking) / MongoDB (Flight)	|
-| Containerisierung      | Docker, Docker Compose								|
-| Logging                | Serilog												|
-| Dokumentation          | Swagger / OpenAPI									|
-| API Testing            | Postman												|
+| Framework              | ASP.NET Core 8.0                                     |
+| Microservices          | Ja (3 Services aktuell)                              |
+| Gateway                | Ocelot (geplant)                                     |
+| Authentifizierung      | JWT                                                  |
+| Datenbanken            | SQLite (User) / MSSQL (Booking) / MongoDB (Flight)   |
+| Containerisierung      | Docker, Docker Compose                               |
+| Logging                | Serilog                                              |
+| Dokumentation          | Swagger / OpenAPI                                    |
+| API Testing            | Postman                                              |
 ```
 ---
 
@@ -111,8 +111,8 @@ SkyBooker/
 
 ## ⚠️ Was fehlt noch?
 ```
-| Aufgabe                                           | Status          |
-|---------------------------------------------------|-----------------|
+| Aufgabe                                           | Status         |
+|---------------------------------------------------|----------------|
 | FlightService vollständige CRUD-Implementierung   | ❌ Ausstehend  |
 | RabbitMQ Setup (optionale Anforderung AO6)        | ❌ Ausstehend  |
 | WhatsApp-Integration (AO3)                        | ❌ Ausstehend  |
