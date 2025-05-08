@@ -17,17 +17,30 @@ namespace AuthService.Services
 
         public async Task<User?> LoginAsync(LoginRequest request)
         {
-            return await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == request.Username && u.PasswordHash == request.Password);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == request.Username);
+
+            if (user == null)
+                return null;
+
+            // Passwort-Hash mit Klartext vergleichen
+            bool isPasswordValid = BCrypt.Net.BCrypt.Verify(request.Password, user.PasswordHash);
+
+            return isPasswordValid ? user : null;
         }
+
 
         public async Task<bool> RegisterAsync(RegisterRequest request)
         {
+            // Passwort verschlüsseln
+            var passwordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+
             var user = new User
             {
                 Username = request.Username,
                 Email = request.Email,
-                PasswordHash = request.Password
+                PasswordHash = passwordHash,
+                CreatedAt = DateTime.UtcNow,
+                UpdatedAt = DateTime.UtcNow
             };
 
             _context.Users.Add(user);
@@ -39,10 +52,21 @@ namespace AuthService.Services
         {
             var user = await _context.Users.FindAsync(id);
             if (user == null)
+            {
                 return false;
+            }
 
+            // Felder aktualisieren
             user.Username = request.Username;
             user.Email = request.Email;
+
+            if (!string.IsNullOrEmpty(request.Password))
+            {
+                // Passwort nur aktualisieren, wenn ein neues angegeben wurde
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password);
+            }
+
+            user.UpdatedAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
             return true;

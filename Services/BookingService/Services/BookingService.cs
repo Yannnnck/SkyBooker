@@ -5,6 +5,7 @@ using BookingService.Models;
 using BookingService.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
+
 namespace BookingService.Services
 {
     public class BookingService : IBookingService
