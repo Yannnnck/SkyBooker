@@ -17,6 +17,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Postman", "Postman", "{58FCD3D0-33E3-4218-8C07-5CB5B8E808A7}"
 	ProjectSection(SolutionItems) = preProject
 		Postman\SkyBookerCollection.json = Postman\SkyBookerCollection.json
+		SkyBookerEnvironment.json = SkyBookerEnvironment.json
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Services", "{94BA2857-8B85-4B2D-9BFD-6EC84AF18258}"
