@@ -113,41 +113,40 @@ SkyBooker/
 ```
 | Aufgabe                                           | Status         |
 |---------------------------------------------------|----------------|
-| FlightService vollständige CRUD-Implementierung   | ❌ Ausstehend  |
-| RabbitMQ Setup (optionale Anforderung AO6)        | ❌ Ausstehend  |
-| WhatsApp-Integration (AO3)                        | ❌ Ausstehend  |
+| Booking Service Testen/Fertigstellen              | ❌ Ausstehend  |
+| RabbitMQ Setup (optionale Anforderung )           | ❌ Ausstehend  |
+| WhatsApp-Integration                              | ❌ Ausstehend  |
 | API Gateway mit Ocelot                            | ⚠️ Noch offen  |
 | Unit Tests                                        | ❌ Ausstehend  |
-| Docker Compose vollständig stabilisiert           | ⚠️ Teilweise   |
+| Docker                                            | ❌ Ausstehend  |
 ```
 ---
 
 ## 🧪 Lokales Setup und Testen
 
-1. **Voraussetzungen installieren**
+1. # Voraussetzungen installieren**
    - Docker Desktop
    - Visual Studio 2022
    - .NET SDK 8.0
 
-2. **Projekt klonen**
+2. # Projekt klonen**
    - bash
    - git clone https://github.com/Yannnnck/SkyBooker
    - cd SkyBooker
 
-3. **Docker Container starten
+3. # Docker Container starten
    - docker-compose up --build
 
 
-4. **WebAPI testen
+4. # WebAPI testen
    - Swagger öffnen: http://localhost:5001/swagger/index.html			
    - AuthService, BookingService, FlightService prüfen
 
-5. **Standard-Ports
+5. # Standard-Ports
    - AuthService: 5001
    - BookingService: 5003
    - FlightService: 5002
    - Ozelot: 5000
 
-**Kontakt
-
+## Kontakt
 Projektleiter: Yannick Frei, Tunahan Keser
