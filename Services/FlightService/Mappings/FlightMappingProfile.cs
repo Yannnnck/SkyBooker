@@ -1,7 +1,7 @@
 ﻿using AutoMapper;
+using FlightService.Data;
 using FlightService.DTOs;
 using FlightService.Models;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace FlightService.Mappings
 {
@@ -9,8 +9,10 @@ namespace FlightService.Mappings
     {
         public FlightMappingProfile()
         {
-            CreateMap<CreateFlightDto, Flight>();
             CreateMap<Flight, FlightResponseDto>();
+            CreateMap<CreateFlightDto, Flight>()
+                .ForMember(dest => dest.CreatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow))
+                .ForMember(dest => dest.UpdatedAt, opt => opt.MapFrom(_ => DateTime.UtcNow));
         }
     }
 }

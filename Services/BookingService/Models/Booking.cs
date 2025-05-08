@@ -1,16 +1,14 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace BookingService.Models
+﻿namespace BookingService.Entities
 {
     public class Booking
     {
-        [Key]
         public int Id { get; set; }
-
         public string FlightId { get; set; } = string.Empty;
-
-        public string UserId { get; set; } = string.Empty;
-
-        public DateTime BookingDate { get; set; }
+        public string PassengerId { get; set; } = string.Empty;
+        public string PassengerFirstname { get; set; } = string.Empty;
+        public string PassengerLastname { get; set; } = string.Empty;
+        public int TicketCount { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
     }
 }
