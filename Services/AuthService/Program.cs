@@ -68,6 +68,13 @@ builder.Services.AddSwaggerGen(c =>
 
 var app = builder.Build();
 
+// Sicherstellen, dass die Datenbank existiert und die Tabellen erstellt sind
+using (var scope = app.Services.CreateScope())
+{
+    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    dbContext.Database.EnsureCreated();
+}
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
