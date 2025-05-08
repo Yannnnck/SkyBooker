@@ -111,14 +111,14 @@ SkyBooker/
 
 ## ⚠️ Was fehlt noch?
 ```
-| Aufgabe											| Status			|
-|---------------------------------------------------|-------------------|
-| FlightService vollständige CRUD-Implementierung	| ❌ Ausstehend		|
-| RabbitMQ Setup (optionale Anforderung AO6)		| ❌ Ausstehend		|
-| WhatsApp-Integration (AO3)						| ❌ Ausstehend		|
-| API Gateway mit Ocelot							| ⚠️ Noch offen		|
-| Unit Tests										| ❌ Ausstehend		|
-| Docker Compose vollständig stabilisiert			| ⚠️ Teilweise		|
+| Aufgabe											| Status		|
+|---------------------------------------------------|----------------|
+| FlightService vollständige CRUD-Implementierung | ❌ Ausstehend |
+| RabbitMQ Setup (optionale Anforderung AO6) | ❌ Ausstehend |
+| WhatsApp-Integration (AO3) | ❌ Ausstehend |
+| API Gateway mit Ocelot | ⚠️ Noch offen |
+| Unit Tests | ❌ Ausstehend |
+| Docker Compose vollständig stabilisiert | ⚠️ Teilweise |
 ```
 ---
 
@@ -130,7 +130,7 @@ SkyBooker/
    - .NET SDK 8.0
 
 2. **Projekt klonen**
-   - ```bash
+   - bash
    - git clone https://github.com/Yannnnck/SkyBooker
    - cd SkyBooker
 
