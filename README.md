@@ -111,14 +111,14 @@ SkyBooker/
 
 ## ⚠️ Was fehlt noch?
 ```
-| Aufgabe											| Status		|
+| Aufgabe								| Status		|
 |---------------------------------------------------|----------------|
-| FlightService vollständige CRUD-Implementierung | ❌ Ausstehend |
-| RabbitMQ Setup (optionale Anforderung AO6) | ❌ Ausstehend |
-| WhatsApp-Integration (AO3) | ❌ Ausstehend |
-| API Gateway mit Ocelot | ⚠️ Noch offen |
-| Unit Tests | ❌ Ausstehend |
-| Docker Compose vollständig stabilisiert | ⚠️ Teilweise |
+| FlightService vollständige CRUD-Implementierung	| ❌ Ausstehend |
+| RabbitMQ Setup (optionale Anforderung AO6)	| ❌ Ausstehend |
+| WhatsApp-Integration (AO3)	| ❌ Ausstehend |
+| API Gateway mit Ocelot	 | ⚠️ Noch offen |
+| Unit Tests	| ❌ Ausstehend |
+| Docker Compose vollständig stabilisiert	 | ⚠️ Teilweise |
 ```
 ---
 
